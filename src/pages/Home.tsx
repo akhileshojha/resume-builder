@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import PersonalInfoForm from '../components/ResumeForm/PersonalInfoForm';
 import EducationForm from '../components/ResumeForm/EducationForm';
 import ExperienceForm from '../components/ResumeForm/ExperienceForm';
@@ -65,8 +66,20 @@ const Home: React.FC<HomeProps> = ({
   skills, setSkills,
   projects, setProjects
 }) => {
+    const navigate = useNavigate();
   const handlePersonalInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPersonalInfo({ ...personalInfo, [e.target.name]: e.target.value });
+  };
+  const handlePreviewClick = () => {
+    navigate('/preview', {
+      state: {
+        personalInfo,
+        education,
+        experience,
+        skills,
+        projects
+      }
+    });
   };
 
   return (
@@ -84,12 +97,12 @@ const Home: React.FC<HomeProps> = ({
         <SkillsForm skills={skills} onChange={setSkills} />
         <ProjectsForm projects={projects} onChange={setProjects} />
         <div className="mt-8 text-center">
-          <a 
-            href="/preview" 
+        <button 
+            onClick={handlePreviewClick}
             className="inline-block p-3 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-700 transition duration-300"
           >
             Preview Resume
-          </a>
+          </button>
         </div>
       </div>
     </div>
