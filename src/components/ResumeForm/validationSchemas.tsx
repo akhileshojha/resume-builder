@@ -16,7 +16,7 @@ const educationSchema = yup.object().shape({
       endYear: yup.string().required("End year is required"),
       description: yup.string().required("Description is required")
     })
-  )
+  ).required("At least one education entry is required")
 });
 
 const experienceSchema = yup.object().shape({

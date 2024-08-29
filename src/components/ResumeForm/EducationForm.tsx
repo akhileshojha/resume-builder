@@ -61,30 +61,28 @@ const EducationForm: React.FC<EducationFormProps> = ({ education, onChange }) =>
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Start Year</label>
-              <input
-                type="text"
-                {...register(`education.${index}.startYear` as const)}
-                className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-              />
-              {errors.education?.[index]?.startYear && (
-                <span className="text-red-500">{errors.education[index]?.startYear?.message}</span>
-              )}
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Start Year</label>
+            <input
+              type="text"
+              {...register(`education.${index}.startYear` as const)}
+              className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+            />
+            {errors.education?.[index]?.startYear && (
+              <span className="text-red-500">{errors.education[index]?.startYear?.message}</span>
+            )}
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">End Year</label>
-              <input
-                type="text"
-                {...register(`education.${index}.endYear` as const)}
-                className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-              />
-              {errors.education?.[index]?.endYear && (
-                <span className="text-red-500">{errors.education[index]?.endYear?.message}</span>
-              )}
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">End Year</label>
+            <input
+              type="text"
+              {...register(`education.${index}.endYear` as const)}
+              className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+            />
+            {errors.education?.[index]?.endYear && (
+              <span className="text-red-500">{errors.education[index]?.endYear?.message}</span>
+            )}
           </div>
 
           <div>
