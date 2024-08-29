@@ -5,7 +5,7 @@ import Preview from './pages/Preview';
 
 const App: React.FC = () => {
   const [personalInfo, setPersonalInfo] = useState({ name: '', email: '', phone: '', address: '' });
-  const [education, setEducation] = useState([{ institution: '', degree: '', startYear: '', endYear: '' }]);
+  const [education, setEducation] = useState([{ school: '', degree: '', startYear: '', endYear: '', description: '' }]);
   const [experience, setExperience] = useState([{ company: '', position: '', startYear: '', endYear: '', description: '' }]);
   const [skills, setSkills] = useState(['']);
   const [projects, setProjects] = useState([{ title: '', description: '', link: '' }]);

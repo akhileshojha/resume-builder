@@ -10,10 +10,11 @@ interface PreviewProps {
     address: string;
   };
   education: Array<{
-    institution: string;
+    school: string;
     degree: string;
     startYear: string;
     endYear: string;
+    description: string;
   }>;
   experience: Array<{
     company: string;
@@ -26,7 +27,9 @@ interface PreviewProps {
   projects: Array<{
     title: string;
     description: string;
-    link: string;
+    startYear: string;
+    endYear: string;
+    technologies: string;
   }>;
 }
 

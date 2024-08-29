@@ -52,12 +52,16 @@ interface HomeProps {
     projects: Array<{
         title: string;
         description: string;
-        link: string;
+        startYear: string;
+        endYear: string;
+        technologies: string;
     }>;
     setProjects: React.Dispatch<React.SetStateAction<Array<{
         title: string;
         description: string;
-        link: string;
+        startYear: string;
+        endYear: string;
+        technologies: string;
     }>>>;
 }
 

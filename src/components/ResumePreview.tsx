@@ -24,7 +24,9 @@ interface ResumePreviewProps {
   projects: Array<{
     title: string;
     description: string;
-    link: string;
+    startYear: string;
+    endYear: string;
+    technologies: string;
   }>;
 }
 
