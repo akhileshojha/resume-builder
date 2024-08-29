@@ -1,42 +1,84 @@
 import React from 'react';
+import { useForm, useFieldArray } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { skillsSchema } from './validationSchemas';
 
-interface SkillsProps {
-  skills: string[];
-  onChange: (skills: string[]) => void;
+interface Skill {
+  name: string;
+  level: string;
 }
 
-const SkillsForm: React.FC<SkillsProps> = ({ skills, onChange }) => {
-  const handleSkillChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedSkills = skills.map((skill, i) => (i === index ? e.target.value : skill));
-    onChange(updatedSkills);
-  };
+interface SkillsFormProps {
+  skills: Skill[];
+  onChange: (skills: Skill[]) => void;
+}
 
-  const addSkill = () => {
-    onChange([...skills, '']);
+const SkillsForm: React.FC<SkillsFormProps> = ({ skills, onChange }) => {
+  const { register, control, handleSubmit, formState: { errors } } = useForm<{
+    skills: Skill[];
+  }>({
+    resolver: yupResolver(skillsSchema),
+    defaultValues: { skills }
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "skills"
+  });
+
+  const onSubmit = (data: { skills: Skill[] }) => {
+    onChange(data.skills);
   };
 
   return (
-    <div className="p-6 bg-white shadow-lg rounded-lg mb-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">Skills</h2>
-      {skills.map((skill, index) => (
-        <div key={index} className="mb-4">
-          <input
-            type="text"
-            value={skill}
-            onChange={(e) => handleSkillChange(index, e)}
-            placeholder="Skill"
-            className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          />
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      {fields.map((item, index) => (
+        <div key={item.id}>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Skill Name</label>
+            <input
+              type="text"
+              {...register(`skills.${index}.name` as const)}
+              className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+            />
+            {errors.skills?.[index]?.name && (
+              <span className="text-red-500">{errors.skills[index]?.name?.message}</span>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Level</label>
+            <input
+              type="text"
+              {...register(`skills.${index}.level` as const)}
+              className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+            />
+            {errors.skills?.[index]?.level && (
+              <span className="text-red-500">{errors.skills[index]?.level?.message}</span>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => remove(index)}
+            className="mt-2 p-1 bg-red-600 text-white rounded"
+          >
+            Remove
+          </button>
         </div>
       ))}
+
       <button
         type="button"
-        onClick={addSkill}
-        className="mt-4 p-3 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-700 transition duration-300"
+        onClick={() => append({ name: '', level: '' })}
+        className="mt-4 p-2 bg-green-600 text-white rounded"
       >
         Add Skill
       </button>
-    </div>
+      <button type="submit" className="mt-4 p-2 bg-blue-600 text-white rounded">
+        Save Skills
+      </button>
+    </form>
   );
 };
 

@@ -1,66 +1,124 @@
 import React from 'react';
+import { useForm, useFieldArray } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { projectsSchema } from './validationSchemas';
 
 interface Project {
   title: string;
   description: string;
-  link: string;
+  startYear: string;
+  endYear: string;
+  technologies: string;
 }
 
-interface ProjectsProps {
+interface ProjectsFormProps {
   projects: Project[];
   onChange: (projects: Project[]) => void;
 }
 
-const ProjectsForm: React.FC<ProjectsProps> = ({ projects, onChange }) => {
-  const handleProjectChange = (index: number, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const updatedProjects = projects.map((project, i) =>
-      i === index ? { ...project, [e.target.name]: e.target.value } : project
-    );
-    onChange(updatedProjects);
-  };
+const ProjectsForm: React.FC<ProjectsFormProps> = ({ projects, onChange }) => {
+  const { register, control, handleSubmit, formState: { errors } } = useForm<{
+    projects: Project[];
+  }>({
+    resolver: yupResolver(projectsSchema),
+    defaultValues: { projects }
+  });
 
-  const addProject = () => {
-    onChange([...projects, { title: '', description: '', link: '' }]);
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "projects"
+  });
+
+  const onSubmit = (data: { projects: Project[] }) => {
+    onChange(data.projects);
   };
 
   return (
-    <div className="p-6 bg-white shadow-lg rounded-lg mb-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">Projects</h2>
-      {projects.map((project, index) => (
-        <div key={index} className="mb-4">
-          <input
-            type="text"
-            name="title"
-            value={project.title}
-            onChange={(e) => handleProjectChange(index, e)}
-            placeholder="Project Title"
-            className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm mb-2"
-          />
-          <textarea
-            name="description"
-            value={project.description}
-            onChange={(e) => handleProjectChange(index, e)}
-            placeholder="Project Description"
-            className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm mb-2"
-          />
-          <input
-            type="text"
-            name="link"
-            value={project.link}
-            onChange={(e) => handleProjectChange(index, e)}
-            placeholder="Project Link"
-            className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          />
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      {fields.map((item, index) => (
+        <div key={item.id}>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Title</label>
+            <input
+              type="text"
+              {...register(`projects.${index}.title` as const)}
+              className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+            />
+            {errors.projects?.[index]?.title && (
+              <span className="text-red-500">{errors.projects[index]?.title?.message}</span>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Description</label>
+            <textarea
+              {...register(`projects.${index}.description` as const)}
+              className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+            />
+            {errors.projects?.[index]?.description && (
+              <span className="text-red-500">{errors.projects[index]?.description?.message}</span>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Start Year</label>
+              <input
+                type="text"
+                {...register(`projects.${index}.startYear` as const)}
+                className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+              />
+              {errors.projects?.[index]?.startYear && (
+                <span className="text-red-500">{errors.projects[index]?.startYear?.message}</span>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">End Year</label>
+              <input
+                type="text"
+                {...register(`projects.${index}.endYear` as const)}
+                className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+              />
+              {errors.projects?.[index]?.endYear && (
+                <span className="text-red-500">{errors.projects[index]?.endYear?.message}</span>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Technologies</label>
+            <input
+              type="text"
+              {...register(`projects.${index}.technologies` as const)}
+              className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+            />
+            {errors.projects?.[index]?.technologies && (
+              <span className="text-red-500">{errors.projects[index]?.technologies?.message}</span>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => remove(index)}
+            className="mt-2 p-1 bg-red-600 text-white rounded"
+          >
+            Remove
+          </button>
         </div>
       ))}
+
       <button
         type="button"
-        onClick={addProject}
-        className="mt-4 p-3 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-700 transition duration-300"
+        onClick={() => append({ title: '', description: '', startYear: '', endYear: '', technologies: '' })}
+        className="mt-4 p-2 bg-green-600 text-white rounded"
       >
         Add Project
       </button>
-    </div>
+      <button type="submit" className="mt-4 p-2 bg-blue-600 text-white rounded">
+        Save Projects
+      </button>
+    </form>
   );
 };
 
